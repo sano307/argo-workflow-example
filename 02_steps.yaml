@@ -1,0 +1,49 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: sokun-
+spec:
+  entrypoint: greeting-parade
+  templates:
+  - name: greeting-parade
+    steps:
+    - - name: step1
+        templateRef:
+          name: alpine-template
+          template: alpine-3.9.2
+        arguments:
+          parameters: [
+            { name: greetings, value: "Good morning." },
+            { name: cpuLimit, value: 100m },
+            { name: memoryLimit, value: 128Mi }
+          ]
+    - - name: step2
+        templateRef:
+          name: alpine-template
+          template: alpine-3.9.2
+        arguments:
+          parameters: [
+            { name: greetings, value: "Good afternoon." },
+            { name: cpuLimit, value: 200m },
+            { name: memoryLimit, value: 256Mi }
+          ]
+    - - name: step3
+        templateRef:
+          name: alpine-template
+          template: alpine-3.9.2
+        arguments:
+          parameters: [
+            { name: greetings, value: "Good evening." },
+            { name: cpuLimit, value: 50m },
+            { name: memoryLimit, value: 64Mi }
+          ]
+      - name: step4
+        templateRef:
+          name: alpine-template
+          template: alpine-3.9.2
+        arguments:
+          parameters: [
+            { name: greetings, value: "Good night." },
+            { name: cpuLimit, value: 50m },
+            { name: memoryLimit, value: 64Mi }
+          ]
