@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: alpine-template
+spec:
+  templates:
+  - name: alpine-3.9.2
+    inputs:
+      parameters:
+      - name: greetings
+    container:
+      image: alpine:3.9.2
+      command: [ echo ]
+      args: [ "{{inputs.parameters.greetings}}" ]
+      resources:
+        limits:
+          cpu: "{{inputs.parameters.cpuLimit}}"
+          memory: "{{inputs.parameters.memoryLimit}}"
