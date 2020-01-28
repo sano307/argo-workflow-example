@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: dag-
+spec:
+  entrypoint: workflow
+  templates:
+  - name: workflow
+    dag:
+      failFast: true
+      tasks:
+      - name: A
+        template: success
+      - name: B-1
+        dependencies: [A]
+        template: success
+      - name: B-2
+        dependencies: [A]
+        template: success
+      - name: C
+        dependencies: [B-1, B-2]
+        template: success
+
+  - name: success
+    container:
+      image: alpine:latest
+      command: [sh, -c]
+      args: ["echo success; exit 0"]
+
+  - name: failure
+    retryStrategy:
+      limit: 1
+    container:
+      image: alpine:latest
+      command: [sh, -c]
+      args: ["echo failure; exit 1"]

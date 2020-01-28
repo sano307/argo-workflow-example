@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: loop-
+spec:
+  arguments:
+    parameters:
+    - name: os
+      value: |
+        [
+          { "image": "ubuntu", "tag": "latest" },
+          { "image": "alpine", "tag": "latest" },
+          { "image": "centos", "tag": "7" },
+          { "image": "fedora", "tag": "latest" }
+        ]
+
+  entrypoint: workflow
+  templates:
+  - name: workflow
+    inputs:
+      parameters:
+      - name: os
+    steps:
+    - - name: test-os
+        template: os-release
+        arguments:
+          parameters:
+          - name: image
+            value: "{{item.image}}"
+          - name: tag
+            value: "{{item.tag}}"
+        withParam: "{{inputs.parameters.os}}"
+
+  - name: os-release
+    inputs:
+      parameters:
+      - name: image
+      - name: tag
+    container:
+      image: "{{inputs.parameters.image}}:{{inputs.parameters.tag}}"
+      command: [cat]
+      args: [/etc/os-release]

@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: artifact-
+spec:
+  entrypoint: workflow
+  templates:
+  - name: workflow
+    inputs:
+      artifacts:
+      - name: kubectl
+        path: /bin/kubectl
+        mode: 0755
+        http:
+          url: https://storage.googleapis.com/kubernetes-release/release/v1.16.2/bin/linux/amd64/kubectl
+    container:
+      image: alpine:latest
+      command: [sh, -c]
+      args: ["kubectl version"]

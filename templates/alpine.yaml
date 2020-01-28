@@ -12,7 +12,3 @@ spec:
       image: alpine:3.9.2
       command: [ echo ]
       args: [ "{{inputs.parameters.greetings}}" ]
-      resources:
-        limits:
-          cpu: "{{inputs.parameters.cpuLimit}}"
-          memory: "{{inputs.parameters.memoryLimit}}"

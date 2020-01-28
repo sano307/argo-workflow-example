@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: conditional-
+spec:
+  entrypoint: workflow
+  templates:
+  - name: workflow
+    steps:
+    - - name: flip-coin
+        template: flip-coin
+    - - name: even
+        template: even
+        when: "{{steps.flip-coin.outputs.result}} == even"
+    - - name: odd
+        template: odd
+        when: "{{steps.flip-coin.outputs.result}} == odd"
+
+  - name: flip-coin
+    script:
+      image: python:alpine3.6
+      command: [python]
+      source: |
+        import random
+        result = "even" if random.randint(0,1) == 0 else "odd"
+        print(result)
+
+  - name: even
+    script:
+      image: alpine:latest
+      command: [sh]
+      source: |
+        echo "It was even."
+
+  - name: odd
+    script:
+      image: alpine:latest
+      command: [sh]
+      source: |
+        echo "It was odd."
